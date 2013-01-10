@@ -57,7 +57,9 @@ void joy1Controls()
 	motorSpeedE = getJoy1y2();
   motor[motorD] = motorSpeedD / motorSlow;
   motor[motorE] = motorSpeedE / motorSlow;
-
+	if(getMotorSlow() != 0)	{
+		motorSlow = getMotorSlow();
+	}
 }
 
 void joy2Controls()
@@ -65,9 +67,6 @@ void joy2Controls()
 	motorSpeedF = getArmMovement();
 	//This motor controls the arm, moving it up and down.
 	//May need editing later, probably just changing it to negative.
-	if(getMotorSlow() != 0)	{
-		motorSlow = getMotorSlow();
-	}
 }
 
 task main()
