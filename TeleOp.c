@@ -1,6 +1,6 @@
 #pragma config(Hubs,  S1, HTMotor,  HTMotor,  none,     none)
 #pragma config(Sensor, S1,     ,               sensorI2CMuxController)
-#pragma config(Motor,  mtr_S1_C1_1,     motorD,        tmotorTetrix, openLoop, reversed)
+#pragma config(Motor,  mtr_S1_C1_1,     motorD,        tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C1_2,     motorE,        tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C2_1,     motorF,        tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C2_2,     motorG,        tmotorTetrix, openLoop)
@@ -8,16 +8,51 @@
 
 #include "JoystickDriver.c"
 
-task main()
+int motorSlow = 1;
+int motorSpeedD = 0;
+int motorSpeedE = 0;
+int motorSpeedF = 0;
+
+void initializeRobot()
 {
-while(true)
-{
-getJoystickSettings(joystick);
-int D = joystick.joy1_y1;
-int E = joystick.joy1_y2;
-motor[motorD] = D;
-motor[motorE] = E;
-//motor[motorD] = 50;
-//motor[motorE] = 50;
+	motor[motorD] = 0;
+	motor[motorE] = 0;
+	motor[motorF] = 0;
 }
+
+void joy1Controls()
+{
+	getJoystickSettings(joystick);
+	motorSpeedD = joystick.joy1_y1;
+	motorSpeedE = joystick.joy1_y2;
+  motor[motorD] = motorSpeedD / motorSlow;
+  motor[motorE] = motorSpeedE / motorSlow;
+  if (joy1Btn(1) == 1) //X position
+	  motorSlow = 1; //fast
+	if (joy1Btn(2) == 1) //A position
+    motorSlow = 2; //medium
+	if (joy1Btn(3) == 1) //B position
+		motorSlow = 4; //slow
+
+}
+
+void joy2Controls()
+{
+	motorSpeedF = joystick.joy2_y1;
+	//This motor controls the arm, moving it up and down.
+	//May need editing later, probably just changing it to negative.
+}
+
+task main()
+
+{
+    initializeRobot();
+
+    //waitForStart();
+
+    while(true)
+    {
+	    joy1Controls();
+	    //joy2Controls();
+    }
 }
