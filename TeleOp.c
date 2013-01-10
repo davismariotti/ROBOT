@@ -8,11 +8,41 @@
 
 #include "JoystickDriver.c"
 
+//Get the left side movement.
+int getJoy1y1()
+{
+	return joystick.joy1_y1;
+}
+//Get the right side movement.
+int getJoy1y2()
+{
+	return joystick.joy1_y2;
+}
+int getArmMovement()
+{
+	return joystick.joy2_y1;
+}
+
+//Returns
+int getMotorSlow()
+{
+  if (joy1Btn(1) == 1) //X position
+	  return 1; //fast
+	else if (joy1Btn(2) == 1) //A position
+    return 2; //medium
+	else if (joy1Btn(3) == 1) //B position
+		return 4; //slow
+	else {
+		return 0;
+	}
+}
+
 int motorSlow = 1;
 int motorSpeedD = 0;
 int motorSpeedE = 0;
 int motorSpeedF = 0;
 
+//Initialize, setting all motors to a speed of 0.
 void initializeRobot()
 {
 	motor[motorD] = 0;
@@ -23,24 +53,21 @@ void initializeRobot()
 void joy1Controls()
 {
 	getJoystickSettings(joystick);
-	motorSpeedD = joystick.joy1_y1;
-	motorSpeedE = joystick.joy1_y2;
+	motorSpeedD = getjoy1y1();
+	motorSpeedE = getJoy1y2();
   motor[motorD] = motorSpeedD / motorSlow;
   motor[motorE] = motorSpeedE / motorSlow;
-  if (joy1Btn(1) == 1) //X position
-	  motorSlow = 1; //fast
-	if (joy1Btn(2) == 1) //A position
-    motorSlow = 2; //medium
-	if (joy1Btn(3) == 1) //B position
-		motorSlow = 4; //slow
 
 }
 
 void joy2Controls()
 {
-	motorSpeedF = joystick.joy2_y1;
+	motorSpeedF = getArmMovement();
 	//This motor controls the arm, moving it up and down.
 	//May need editing later, probably just changing it to negative.
+	if(getMotorSlow() != 0)	{
+		motorSlow = getMotorSlow();
+	}
 }
 
 task main()
