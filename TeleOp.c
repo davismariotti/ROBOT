@@ -74,7 +74,7 @@ task main()
 {
     initializeRobot();
 
-    //waitForStart();
+    waitForStart();
 
     while(true)
     {
