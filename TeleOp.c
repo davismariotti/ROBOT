@@ -53,13 +53,13 @@ void initializeRobot()
 void joy1Controls()
 {
 	getJoystickSettings(joystick);
-	motorSpeedD = getjoy1y1();
+	motorSpeedD = getJoy1y1();
 	motorSpeedE = getJoy1y2();
-  motor[motorD] = motorSpeedD / motorSlow;
-  motor[motorE] = motorSpeedE / motorSlow;
 	if(getMotorSlow() != 0)	{
 		motorSlow = getMotorSlow();
 	}
+  motor[motorD] = motorSpeedD / motorSlow;
+  motor[motorE] = motorSpeedE / motorSlow;
 }
 
 void joy2Controls()
