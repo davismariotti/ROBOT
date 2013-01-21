@@ -15,18 +15,21 @@ int motorSpeedE = 0;
 int motorSpeedF = 0;
 int motorSpeedG = 0;
 
+void initializeRobot() { //Initialize, setting all motors to a speed of 0.
+	motor[motorD] = 0;
+	motor[motorE] = 0;
+}
 
-//Get the left side movement.
-int getJoy1y1() {
+//--------------------  Joystick 1 (Driver) Controls --------------------------
+
+int getJoy1y1() { //Get the left side movement.
 	return joystick.joy1_y1;
 }
-//Get the right side movement.
-int getJoy1y2() {
+int getJoy1y2() {  //Get the right side movement.
 	return joystick.joy1_y2;
 }
 
-//Returns which speed to go at
-int getMotorSlow() {
+int getMotorSlow() { //Returns which speed to go at
   if (joy1Btn(1) == 1) //X position
 	  return 1; //fast
 	else if (joy1Btn(2) == 1) //A position
@@ -36,12 +39,6 @@ int getMotorSlow() {
 	else {
 		return 0;
 	}
-}
-
-//Initialize, setting all motors to a speed of 0.
-void initializeRobot() {
-	motor[motorD] = 0;
-	motor[motorE] = 0;
 }
 
 void joy1Controls() {
@@ -55,11 +52,9 @@ void joy1Controls() {
   motor[motorE] = motorSpeedE / motorSlow;
 }
 
-/*
- * Get Joystick 2 (Guunner) Controls
- */
+// ------------------- Joystick 2 (Gunner) Controls ------------------------
 
-int getArmMovement() {
+int getArmMovement() {  //Gets Arm movement
 	if (joy2Btn(7) == 1) {
 		return 50;
 	}
@@ -69,19 +64,19 @@ int getArmMovement() {
 	else return 0;
 }
 
-int getSpoolMovement() {
+int getSpoolMovement() {  //Gets Spool Movement
 	return joystick.joy2_y1;
 }
 
-int getClawMovement() {
+int getClawMovement() { //Gets Claw Movement
 	return joystick.joy2_y2;
 }
 
-int getToggleSpool() {
+int getToggleSpool() {  //Gets sniper mode for spooling
 	toggleArm = (joy2Btn(2) == 1) ? true : false;
 }
 
-int getToggleArm() {
+int getToggleArm() {  //Gets sniper mode for moving the arm up and down
 	toggleArm = (joy2Btn(3) == 1) ? true : false;
 }
 
@@ -96,7 +91,6 @@ void joy2Controls() {
 	motor[motorG] = (toggleSpool) ? motorSpeedG : motorSpeedG - 20;
 
 	//This motor controls the arm, moving it up and down.
-	//May need editing later, probably just changing it to negative.
 }
 
 task main() {
