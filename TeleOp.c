@@ -7,20 +7,26 @@
 
 #include "JoystickDriver.c"
 
+int motorSlow = 1;
+bool toogleArm = false;
+bool toogleSpool = false;
+int motorSpeedD = 0;
+int motorSpeedE = 0;
+int motorSpeedF = 0;
+int motorSpeedG = 0;
+
+
 //Get the left side movement.
-int getJoy1y1()
-{
+int getJoy1y1() {
 	return joystick.joy1_y1;
 }
 //Get the right side movement.
-int getJoy1y2()
-{
+int getJoy1y2() {
 	return joystick.joy1_y2;
 }
 
-//Returns
-int getMotorSlow()
-{
+//Returns which speed to go at
+int getMotorSlow() {
   if (joy1Btn(1) == 1) //X position
 	  return 1; //fast
 	else if (joy1Btn(2) == 1) //A position
@@ -32,23 +38,13 @@ int getMotorSlow()
 	}
 }
 
-int motorSlow = 1;
-bool toogleArm = false;
-bool toogleSpool = false;
-int motorSpeedD = 0;
-int motorSpeedE = 0;
-int motorSpeedF = 0;
-int motorSpeedG = 0;
-
 //Initialize, setting all motors to a speed of 0.
-void initializeRobot()
-{
+void initializeRobot() {
 	motor[motorD] = 0;
 	motor[motorE] = 0;
 }
 
-void joy1Controls()
-{
+void joy1Controls() {
 	getJoystickSettings(joystick);
 	motorSpeedD = getJoy1y1();
 	motorSpeedE = getJoy1y2();
@@ -63,8 +59,7 @@ void joy1Controls()
  * Get Joystick 2 (Guunner) Controls
  */
 
-int getArmMovement()
-{
+int getArmMovement() {
 	if (joy2Btn(7) == 1) {
 		return 50;
 	}
@@ -74,18 +69,15 @@ int getArmMovement()
 	else return 0;
 }
 
-int getSpoolMovement()
-{
+int getSpoolMovement() {
 	return joystick.joy2_y1;
 }
 
-int getClawMovement()
-{
+int getClawMovement() {
 	return joystick.joy2_y2;
 }
 
-int getToggleSpool()
-{
+int getToggleSpool() {
 	toggleArm = (joy2Btn(2) == 1) ? true : false;
 }
 
@@ -93,8 +85,7 @@ int getToggleArm() {
 	toggleArm = (joy2Btn(3) == 1) ? true : false;
 }
 
-void joy2Controls()
-{
+void joy2Controls() {
 	motorSpeedF = getArmMovement();
 	motorSpeedG = getSpoolMovement();
 
@@ -108,15 +99,11 @@ void joy2Controls()
 	//May need editing later, probably just changing it to negative.
 }
 
-task main()
-
-{
+task main() {
     initializeRobot();
-
     waitForStart();
 
-    while(true)
-    {
+    while(true) {
 	    joy1Controls();
 	    joy2Controls();
     }
