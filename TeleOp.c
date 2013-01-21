@@ -13,6 +13,8 @@
 int motorSlow = 1;
 bool toggleArm = false;
 bool toggleSpool = false;
+bool toggleClaw = false;
+int motorSpeedA = 0;
 int motorSpeedD = 0;
 int motorSpeedE = 0;
 int motorSpeedF = 0;
@@ -63,10 +65,10 @@ void joy1Controls() {
 
 int getArmMovement() {  //Gets Arm movement
 	if (joy2Btn(7) == 1) {
-		return 100;
+		return 80;
 	}
 	else if(joy2Btn(8) == 1) {
-		return -5;
+		return -15;
 	}
 	else return 0;
 }
@@ -79,6 +81,12 @@ int getSpoolMovement() {  //Gets Spool Movement
 int getClawMovement() { //Gets Claw Movement
 	if(joystick.joy2_y2 > 10 || joystick.joy2_y2 < -10) return joystick.joy2_y2/4;
 	else return 0;
+}
+
+void getClawToggle() {
+	if(joy2Btn(1) == 1) {
+		toggleClaw = (toggleClaw) ? true : false;
+	}
 }
 
 void getToggleSpool() {  //Gets sniper mode for spooling
@@ -96,11 +104,12 @@ void getToggleArm() {  //Gets sniper mode for moving the arm up and down
 void joy2Controls() {
 	motorSpeedF = getArmMovement();
 	motorSpeedG = getSpoolMovement();
+	motorSpeedA = getClawMovement();
 
 	getToggleSpool();
 	getToggleArm();
 
-	motor[motorA] = getClawMovement();
+	motor[motorA] = (toggleClaw) ? motorSpeedA : motorSpeedA / 2;
 	motor[motorF] = (toggleArm) ? motorSpeedF : motorSpeedF / 2;
 	motor[motorG] = (toggleSpool) ? motorSpeedG : motorSpeedG / 2;
 
