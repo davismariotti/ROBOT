@@ -7,6 +7,8 @@
 
 #include "JoystickDriver.c"
 
+//----------------------------- Initialization ------------------------------
+
 int motorSlow = 1;
 bool toogleArm = false;
 bool toogleSpool = false;
@@ -92,6 +94,8 @@ void joy2Controls() {
 
 	//This motor controls the arm, moving it up and down.
 }
+
+//--------------------------------- Main --------------------------------
 
 task main() {
     initializeRobot();
