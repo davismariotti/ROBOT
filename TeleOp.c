@@ -39,15 +39,10 @@ int getJoy1y2() {  //Get the right side movement.
 }
 
 int getMotorSlow() { //Returns which speed to go at
-  if (joy1Btn(1) == 1) //X position
-	  return 1; //fast
-	else if (joy1Btn(2) == 1) //A position
-    return 2; //medium
-	else if (joy1Btn(3) == 1) //B position
-		return 4; //slow
-	else {
-		return 0;
-	}
+  if (joy1Btn(1) == 1) return 1; //fast X Button
+  else if (joy1Btn(2) == 1) return 2; //medium A position
+  else if (joy1Btn(3) == 1) return 4; //slow B position
+  else return 0;
 }
 
 void joy1Controls() {
