@@ -52,21 +52,41 @@ void joy1Controls() {
 	if(getMotorSlow() != 0)	{
 		motorSlow = getMotorSlow();
 	}
-  motor[motorD] = motorSpeedD / motorSlow;
-  motor[motorE] = motorSpeedE / motorSlow;
+	if(joy1Btn(8) == 1) {
+		motor[motorD] = 10;
+		motor[motorE] = 10;
+	}
+	else if(joy1Btn(7) == 1) {
+		motor[motorD] = -10;
+		motor[motorE] = -10;
+	}
+	else if(joy1Btn(5) == 1) {
+		motor[motorD] = 25;
+		motor[motorE] = -25;
+	}
+	else if(joy1Btn(6) == 1) {
+		motor[motorD] = -25;
+		motor[motorE] = 25;
+	}
+	else {
+  	motor[motorD] = motorSpeedD / motorSlow;
+  	motor[motorE] = motorSpeedE / motorSlow;
+	}
 }
 
 // ------------------- Joystick 2 (Gunner) Controls ------------------------
 
 int getArmMovement() {  //Gets Arm movement
 	if (joy2Btn(7) == 1) {
-		return 80;
+		return 100;
 	}
 	else if(joy2Btn(8) == 1) {
 		return -15;
 	}
 	else return 0;
 }
+
+
 
 int getSpoolMovement() {  //Gets Spool Movement
 	if(joystick.joy2_y1 > 10 || joystick.joy2_y1 < -10) return joystick.joy2_y1;
