@@ -9,29 +9,29 @@
 
 #include "HTIRS2-driver.h"
 
-bool error = false;
+bool IRFail = false;
 
 void initializeRobot() {
     motor[motorA] = 0;  //Set all motors to zero.
 	motor[motorD] = 0;
 	motor[motorE] = 0;
-	motor[motorF] = 0;
+	motor[motorF] = 0; 
 	motor[motorG] = 0;
 
-	//---------- IR Sensor Initialization ----------//
-	tHTIRS2DSPMode _mode = DSP_1200; set DSP mode to 1200 Hz.
-	if (HTIRS2setDSPMode(HTIRS2, _mode) == 0) { // attempt to set to DSP mode.
-		eraseDisplay();  // unsuccessful at setting the mode; display error message.
-		nxtDisplayCenteredTextLine(0, "ERROR!");
+	//--------------- IR Sensor Initialization ---------------
+	tHTIRS2DSPMode _mode = DSP_1200; //set DSP mode to 1200 Hz.
+	if (HTIRS2setDSPMode(HTIRS2, _mode) == 0) { //unsuccessful at setting the mode; display error message.
+		eraseDisplay();  
+		nxtDisplayCenteredTextLine(0, "ERROR!");  
 		nxtDisplayCenteredTextLine(2, "Init failed!");
 		nxtDisplayCenteredTextLine(3, "Connect sensor");
 		nxtDisplayCenteredTextLine(4, "to Port 2.");
-		error = true;
+		IRFail = true;
 	}
 }
 
 void stopRobot() {
-	motor[motorA] = 0;  //Set all motors to zero.
+	motor[motorA] = 0;  //Set all motors to zero, stopping the robot.
 	motor[motorD] = 0;
 	motor[motorE] = 0;
 	motor[motorF] = 0;
@@ -40,17 +40,17 @@ void stopRobot() {
 
 int getIRDirection() {
 	int IRDirection = 0;
-	IRDirection = HTIRS2readACDir(HTIRS2); // read the current modulated signal direction
+	IRDirection = HTIRS2readACDir(HTIRS2); // Read the current modulated signal direction.
 	return IRDirection;
 }
 
 void followIR() {
 	if (getIRDirection() < 0) {
-		writeDebugStreamLine("Read dir ERROR!"); // error! - write to debug stream and then break.
+		writeDebugStreamLine("Read dir ERROR!"); // Unsucessful IR read; display error.
 		stopRobot();
 	}
 	else {
-		IRDirection -= 5; //Make it so that zero is straight ahead
+		IRDirection -= 5; //Make it so that zero is straight ahead.
 		
 		nxtDisplayCenteredBigTextLine(1, "Dir=%d", IRDirection());   //Display stuff on the NXT Brick.
 			
@@ -61,11 +61,12 @@ void followIR() {
 	}
 }
 
+//------------------------------ Main Task ------------------------------
 task main() {
 	initializeRobot();
 	waitForStart();
 	
-	if (error == true) {  //If the IR Sensor failed to initialize, stop the robot.
+	if (IRFail == true) {  //If the IR Sensor failed to initialize, stop the robot.
 		stopRobot();
 	}
 	else {
