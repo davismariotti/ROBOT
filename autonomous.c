@@ -9,6 +9,8 @@
 
 #include "HTIRS2-driver.h"
 
+bool error = false;
+
 void initializeRobot() {
     motor[motorA] = 0;  //Set all motors to zero.
 	motor[motorD] = 0;
@@ -16,18 +18,16 @@ void initializeRobot() {
 	motor[motorF] = 0;
 	motor[motorG] = 0;
 
+	//---------- IR Sensor Initialization ----------//
 	tHTIRS2DSPMode _mode = DSP_1200; set DSP mode to 1200 Hz.
 	if (HTIRS2setDSPMode(HTIRS2, _mode) == 0) { // attempt to set to DSP mode.
 		eraseDisplay();  // unsuccessful at setting the mode; display error message.
 		nxtDisplayCenteredTextLine(0, "ERROR!");
 		nxtDisplayCenteredTextLine(2, "Init failed!");
 		nxtDisplayCenteredTextLine(3, "Connect sensor");
-		nxtDisplayCenteredTextLine(4, "to Port 1.");
-		
-		wait10Msec(300); // wait so user can read message, then leave main task.
-		return;
+		nxtDisplayCenteredTextLine(4, "to Port 2.");
+		error = true;
 	}
-	eraseDisplay();
 }
 
 void stopRobot() {
@@ -41,40 +41,36 @@ void stopRobot() {
 int getIRDirection() {
 	int IRDirection = 0;
 	IRDirection = HTIRS2readACDir(HTIRS2); // read the current modulated signal direction
-	if (IRDirection < 0) {
+	return IRDirection;
+}
+
+void followIR() {
+	if (getIRDirection() < 0) {
 		writeDebugStreamLine("Read dir ERROR!"); // error! - write to debug stream and then break.
 		stopRobot();
 	}
 	else {
-	IRDirection -= 5; //Make it so that zero is straight ahead
-	return IRDirection;
+		IRDirection -= 5; //Make it so that zero is straight ahead
+		
+		nxtDisplayCenteredBigTextLine(1, "Dir=%d", IRDirection());   //Display stuff on the NXT Brick.
+			
+		motor[motorD] = 50 + 30 * getIRDirection(); // calculate left and right motor speeds.
+		motor[motorE] = 50 - 30 * getIRDirection();
+		
+		wait1Msec(1000);
 	}
 }
-
-/*int getIRSig() { //This function probably isn't needed
-	int IRSig = 0; // the max signal strength from the seeker.
-	int S1, S2, S3, S4, S5 = 0; // the five different sections that the sensor returns signal strength for
-	if (!HTIRS2readAllACStrength(HTIRS2, S1, S2, S3, S4, S5 )) { // Get the AC signal strength adjustedDirectionues.
-		writeDebugStreamLine("Read sig ERROR!");  // error! - write to debug stream and then break.
-		stopRobot();
-	}  
-	else { // find the max signal strength of all detectors.
-		IRSig = (S1 > S2) ? S1 : S2;
-		IRSig = (IRSig > S3) ? IRSig : S3;
-		IRSig = (IRSig > S4) ? IRSig : S4;
-		IRSig = (IRSig > S5) ? IRSig : S5;
-		return IRSig
-	}	
-}*/
 
 task main() {
 	initializeRobot();
 	waitForStart();
 	
-	while(true) {
-		motor[motorD] = 50 + 30 * getIRDirection(); // calculate left and right motor speeds.
-		motor[motorE] = 50 - 30 * getIRDirection();
-		
-		wait10Msec(2);
+	if (error == true) {  //If the IR Sensor failed to initialize, stop the robot.
+		stopRobot();
+	}
+	else {
+		while(true) {
+			followIR();
+		}
 	}
 }
