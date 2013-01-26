@@ -30,11 +30,11 @@ void initializeRobot() { //Initialize, setting all motors to a speed of 0.
 //--------------------  Joystick 1 (Driver) Controls --------------------------
 
 int getJoy1y1() { //Get the left side movement.
-	if(joystick.joy1_y1 > 10 || joystick.joy1_y1 < -10) return joystick.joy1_y1;
+	if(joystick.joy1_y1 > 10 || joystick.joy1_y1 < -10) return joystick.joy1_y1 / 3;
 	else return 0;
 }
 int getJoy1y2() {  //Get the right side movement.
-	if(joystick.joy1_y2 > 10 || joystick.joy1_y2 < -10) return joystick.joy1_y2;
+	if(joystick.joy1_y2 > 10 || joystick.joy1_y2 < -10) return joystick.joy1_y2 / 3;
 	else return 0;
 }
 
@@ -61,12 +61,12 @@ void joy1Controls() {
 		motor[motorE] = -10;
 	}
 	else if(joy1Btn(5) == 1) {
-		motor[motorD] = 25;
-		motor[motorE] = -25;
+		motor[motorD] = 17;
+		motor[motorE] = -17;
 	}
 	else if(joy1Btn(6) == 1) {
-		motor[motorD] = -25;
-		motor[motorE] = 25;
+		motor[motorD] = -17;
+		motor[motorE] = 17;
 	}
 	else {
   	motor[motorD] = motorSpeedD / motorSlow;
@@ -98,35 +98,14 @@ int getClawMovement() { //Gets Claw Movement
 	else return 0;
 }
 
-void getClawToggle() {
-	if(joy2Btn(1) == 1) {
-		toggleClaw = (toggleClaw) ? true : false;
-	}
-}
-
-void getToggleSpool() {  //Gets sniper mode for spooling
-	if(joy2Btn(2) == 1) {
-		toggleSpool = (toggleSpool) ? true : false;
-	}
-}
-
-void getToggleArm() {  //Gets sniper mode for moving the arm up and down
-	if(joy2Btn(3) == 1) {
-		toggleArm = (toggleArm) ? true : false;
-	}
-}
-
 void joy2Controls() {
 	motorSpeedF = getArmMovement();
 	motorSpeedG = getSpoolMovement();
 	motorSpeedA = getClawMovement();
 
-	getToggleSpool();
-	getToggleArm();
-
-	motor[motorA] = (toggleClaw) ? motorSpeedA : motorSpeedA / 2;
-	motor[motorF] = (toggleArm) ? motorSpeedF : motorSpeedF / 2;
-	motor[motorG] = (toggleSpool) ? motorSpeedG : motorSpeedG / 2;
+	motor[motorA] = motorSpeedA;
+	motor[motorF] = motorSpeedF;
+	motor[motorG] = motorSpeedG;
 
 	//This motor controls the arm, moving it up and down.
 }
